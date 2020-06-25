@@ -19,9 +19,9 @@ class Nagad{
     {
         date_default_timezone_set('Asia/Dhaka');
         if (config('nagad.sandbox_mode') === 'sandbox') {
-            $this->nagadHost = "http://sandbox.mynagad.com:10080/";
+            $this->nagadHost = "http://sandbox.mynagad.com:10080/remote-payment-gateway-1.0/api/dfs";
         }else{
-            $this->nagadHost = "https://payment.mynagad.com:30000/";
+            $this->nagadHost = "https://api.mynagad.com/api/dfs";
         }
 
     }
@@ -62,8 +62,14 @@ class Nagad{
             'signature' => Utility::SignatureGenerate(json_encode($SensitiveData))
         );
 
-        $ur = $this->nagadHost."remote-payment-gateway-1.0/api/dfs/check-out/initialize/" . $MerchantID . "/" . $invoice_no;
-        $Result_Data = Utility::HttpPostMethod($ur,$PostData);
+        $ur = $this->nagadHost."/check-out/initialize/" . $MerchantID . "/" . $invoice_no;
+
+            $Result_Data = Utility::HttpPostMethod($ur,$PostData);
+            //return $Result_Data;
+
+
+        return $Result_Data;
+
 
         if (isset($Result_Data['sensitiveData']) && isset($Result_Data['signature'])) {
             if ($Result_Data['sensitiveData'] != "" && $Result_Data['signature'] != "") {
@@ -101,7 +107,7 @@ class Nagad{
                     // echo json_encode($PostDataOrder);
                     // exit();
 
-                    $OrderSubmitUrl = $this->nagadHost."remote-payment-gateway-1.0/api/dfs/check-out/complete/" . $paymentReferenceId;
+                    $OrderSubmitUrl = $this->nagadHost."/check-out/complete/" . $paymentReferenceId;
                     $Result_Data_Order = Utility::HttpPostMethod($OrderSubmitUrl, $PostDataOrder);
                         if ($Result_Data_Order['status'] == "Success") {
                             $url = ($Result_Data_Order['callBackUrl']);
@@ -122,7 +128,7 @@ class Nagad{
     public function verify(){
         $Query_String = explode("&", explode("?", $_SERVER['REQUEST_URI'])[1]);
         $payment_ref_id = substr($Query_String[2], 15);
-        $url = $this->nagadHost."remote-payment-gateway-1.0/api/dfs/verify/payment/" . $payment_ref_id;
+        $url = $this->nagadHost."/verify/payment/" . $payment_ref_id;
         $json = Utility::HttpGet($url);
         $arr = json_decode($json, true);
         return $arr;
