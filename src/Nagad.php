@@ -21,7 +21,7 @@ class Nagad{
         if (config('nagad.sandbox_mode') === 'sandbox') {
             $this->nagadHost = "http://sandbox.mynagad.com:10080/";
         }else{
-            $this->nagadHost = "";
+            $this->nagadHost = "https://payment.mynagad.com:30000/";
         }
 
     }
