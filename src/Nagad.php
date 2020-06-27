@@ -2,7 +2,6 @@
 
 namespace Code4mk\Nagad;
 
-use GuzzleHttp\Client;
 use Code4mk\Nagad\Utility;
 
 class Nagad{
@@ -43,7 +42,7 @@ class Nagad{
     {
 
         $DateTime = Date('YmdHis');
-        $MerchantID = config('nagad.merchant_id');
+        $MerchantID = config('nagad.sandbox_mode') = 'sandbox' ? '01711428036' : config('nagad.merchant_id');
         //$invoice_no = 'Inv'.Date('YmdH').rand(1000, 10000);
         $invoice_no = $this->tnx_status ? $this->tnx :'Inv'.Date('YmdH').rand(1000, 10000);
         $merchantCallbackURL = config('nagad.callback_url');
@@ -61,6 +60,7 @@ class Nagad{
             'sensitiveData' => Utility::EncryptDataWithPublicKey(json_encode($SensitiveData)),
             'signature' => Utility::SignatureGenerate(json_encode($SensitiveData))
         );
+
 
         $ur = $this->nagadHost."/check-out/initialize/" . $MerchantID . "/" . $invoice_no;
 
