@@ -1,4 +1,4 @@
-# lara-nagad
+# lara-nagad `Bangladesh Nagad`
 Laravel Nagad payment `BD`
 
 # Installation
@@ -37,10 +37,21 @@ return [
 ## get callback url
 
 ```php
+<?php
 use NagadPayment;
 
 $redirectUrl = NagadPayment::tnxID($id)
              ->amount($amount)
              ->getRediectUrl();
 return $redirectUrl;
+```
+
+## verify payment
+
+```php
+<?php
+use NagadPayment;
+
+$data = NagadPayment::verify();
+return $data;
 ```
