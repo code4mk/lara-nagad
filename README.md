@@ -42,7 +42,7 @@ use NagadPayment;
 
 $redirectUrl = NagadPayment::tnxID($id)
              ->amount($amount)
-             ->getRediectUrl();
+             ->getRedirectUrl();
 return $redirectUrl;
 ```
 

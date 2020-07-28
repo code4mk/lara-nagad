@@ -57,12 +57,12 @@ class Nagad{
     }
 
     /**
-     * Get Session <callback url>
+     * Get redirect url <callback url>
      * @author code4mk <hiremostafa@gmail.com>
      * @since v1.0.0
      * @version 1.0.0
      */
-    public function getRediectUrl()
+    public function getRedirectUrl()
     {
         $DateTime = Date('YmdHis');
         $MerchantID = config('nagad.merchant_id');
