@@ -34,6 +34,17 @@ return [
 ];
 ```
 
+# env setup
+
+```bash
+NAGAD_MERCHANT_ID=683002007104225
+NAGAD_MERCHANT_NUMBER=01711428036
+NAGAD_CALLBACK_URL=http://127.0.0.1:8000/nagad/callback
+NAGAD_MODE=sandbox // sandbox or live
+NAGAD_PUBLIC_KEY="" //sandbox <optional>
+NAGAD_PRIVATE_KEY=""  // sandbox <optional>
+```
+
 # Usage
 
 ## get callback url
