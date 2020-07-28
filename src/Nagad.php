@@ -4,14 +4,17 @@ namespace Code4mk\Nagad;
 
 use Code4mk\Nagad\Utility;
 
+/**
+ * Nagad class
+ * @author code4mk <hiremostafa@gmail.com>
+ * @version 1.0.0
+ */
+
 class Nagad{
 
-    private $amount;
-    private $tnx;
-
+    private $tnxID;
     private $nagadHost;
-    private $tnx_status = false;
-
+    private $tnxStatus = false;
     private $merchantAdditionalInfo = [];
 
     public function __construct()
@@ -22,54 +25,67 @@ class Nagad{
         }else{
             $this->nagadHost = "https://api.mynagad.com/api/dfs";
         }
-
     }
 
-    public function tnx($id,$status=false)
+    /**
+     * Trasaction ID.
+     * @param int $id.
+     * @param bool $status.
+     * @author code4mk <hiremostafa@gmail.com>
+     * @since v1.0.0
+     * @version 1.0.0
+     */
+
+    public function tnxID($id,$status=false)
     {
-        $this->tnx = $id;
-        $this->tnx_status = $status;
+        $this->tnxID = $id;
+        $this->tnxStatus = $status;
         return $this;
     }
 
+    /**
+     * Amount.
+     * @param int $amount.
+     * @author code4mk <hiremostafa@gmail.com>
+     * @since v1.0.0
+     * @version 1.0.0
+     */
     public function amount($amount)
     {
         $this->amount = $amount;
         return $this;
     }
 
-    public function getSession()
+    /**
+     * Get Session <callback url>
+     * @author code4mk <hiremostafa@gmail.com>
+     * @since v1.0.0
+     * @version 1.0.0
+     */
+    public function getRediectUrl()
     {
-
         $DateTime = Date('YmdHis');
-        $MerchantID = config('nagad.sandbox_mode') = 'sandbox' ? '01711428036' : config('nagad.merchant_id');
-        //$invoice_no = 'Inv'.Date('YmdH').rand(1000, 10000);
-        $invoice_no = $this->tnx_status ? $this->tnx :'Inv'.Date('YmdH').rand(1000, 10000);
+        $MerchantID = config('nagad.merchant_id');
+        $invoiceNo = $this->tnxStatus ? $this->tnxID : 'Inv'.Date('YmdH').rand(1000, 10000);
         $merchantCallbackURL = config('nagad.callback_url');
 
         $SensitiveData = [
             'merchantId' => $MerchantID,
             'datetime' => $DateTime,
-            'orderId' => $invoice_no,
+            'orderId' => $invoiceNo,
             'challenge' => Utility::generateRandomString()
         ];
 
         $PostData = array(
-            'accountNumber' => config('nagad.merchant_number'), //optional
+            'accountNumber' => config('nagad.merchant_number'),
             'dateTime' => $DateTime,
             'sensitiveData' => Utility::EncryptDataWithPublicKey(json_encode($SensitiveData)),
             'signature' => Utility::SignatureGenerate(json_encode($SensitiveData))
         );
 
+        $initializeUrl = $this->nagadHost."/check-out/initialize/" . $MerchantID . "/" . $invoiceNo;
 
-        $ur = $this->nagadHost."/check-out/initialize/" . $MerchantID . "/" . $invoice_no;
-
-            $Result_Data = Utility::HttpPostMethod($ur,$PostData);
-            //return $Result_Data;
-
-
-        return $Result_Data;
-
+        $Result_Data = Utility::HttpPostMethod($initializeUrl,$PostData);
 
         if (isset($Result_Data['sensitiveData']) && isset($Result_Data['signature'])) {
             if ($Result_Data['sensitiveData'] != "" && $Result_Data['signature'] != "") {
@@ -83,7 +99,7 @@ class Nagad{
 
                     $SensitiveDataOrder = array(
                         'merchantId' => $MerchantID,
-                        'orderId' => $invoice_no,
+                        'orderId' => $invoiceNo,
                         'currencyCode' => '050',
                         'amount' => $this->amount,
                         'challenge' => $randomserver
@@ -92,10 +108,8 @@ class Nagad{
 
                     // $merchantAdditionalInfo = '{"no_of_seat": "1", "Service_Charge":"20"}';
                     if($this->tnx !== ''){
-                        $this->merchantAdditionalInfo['tnx_id'] =  $this->tnx;
+                        $this->merchantAdditionalInfo['tnx_id'] =  $this->tnxID;
                     }
-                    // echo $merchantAdditionalInfo;
-                    // exit();
 
                     $PostDataOrder = array(
                         'sensitiveData' => Utility::EncryptDataWithPublicKey(json_encode($SensitiveDataOrder)),
@@ -103,16 +117,13 @@ class Nagad{
                         'merchantCallbackURL' => $merchantCallbackURL,
                         'additionalMerchantInfo' => (object)$this->merchantAdditionalInfo
                     );
-
-                    // echo json_encode($PostDataOrder);
-                    // exit();
-
+                    // order submit
                     $OrderSubmitUrl = $this->nagadHost."/check-out/complete/" . $paymentReferenceId;
                     $Result_Data_Order = Utility::HttpPostMethod($OrderSubmitUrl, $PostDataOrder);
                         if ($Result_Data_Order['status'] == "Success") {
-                            $url = ($Result_Data_Order['callBackUrl']);
-                            return response()->json($url);
-                            echo "<script>window.open($url, '_self')</script>";
+                            $callBackUrl = ($Result_Data_Order['callBackUrl']);
+                            return response()->json($callBackUrl);
+                            //echo "<script>window.open($url, '_self')</script>";
                         }
                         else {
                             echo json_encode($Result_Data_Order);
@@ -124,6 +135,13 @@ class Nagad{
         }
 
     }
+
+    /**
+     * Verify Payment
+     * @author code4mk <hiremostafa@gmail.com>
+     * @since v1.0.0
+     * @version 1.0.0
+     */
 
     public function verify(){
         $Query_String = explode("&", explode("?", $_SERVER['REQUEST_URI'])[1]);
