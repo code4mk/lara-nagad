@@ -107,7 +107,7 @@ class Nagad{
 
 
                     // $merchantAdditionalInfo = '{"no_of_seat": "1", "Service_Charge":"20"}';
-                    if($this->tnx !== ''){
+                    if($this->tnxID !== ''){
                         $this->merchantAdditionalInfo['tnx_id'] =  $this->tnxID;
                     }
 
@@ -122,7 +122,7 @@ class Nagad{
                     $Result_Data_Order = Utility::HttpPostMethod($OrderSubmitUrl, $PostDataOrder);
                         if ($Result_Data_Order['status'] == "Success") {
                             $callBackUrl = ($Result_Data_Order['callBackUrl']);
-                            return response()->json($callBackUrl);
+                            return $callBackUrl;
                             //echo "<script>window.open($url, '_self')</script>";
                         }
                         else {

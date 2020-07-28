@@ -14,7 +14,7 @@ composer require code4mk/lara-nagad
 ## 1 ) vendor publish (config)
 
 ```bash
-php artisan vendor:publish --provider="Code4mk\NagadServiceProvider" --tag=config
+php artisan vendor:publish --provider="Code4mk\Nagad\NagadServiceProvider" --tag=config
 ```
 
 ## 2 ) Config setup
@@ -48,14 +48,24 @@ $redirectUrl = NagadPayment::tnxID($id)
 return $redirectUrl;
 ```
 
-## verify payment
+## verify payment // callback
 
 ```php
 <?php
 use NagadPayment;
 
-$data = NagadPayment::verify();
-return $data;
+$verify = (object) NagadPayment::verify();
+if($verify->status === 'Success'){
+    $order = json_decode($verify->additionalMerchantInfo);
+    $order_id = $order->tnx_id;
+    // your functional task with order_id
+}
+if ($verify->status === 'Aborted') {
+    dd($verify);
+    // redirect or other what you want
+}
+dd($verify);
+
 ```
 
 # Any query
