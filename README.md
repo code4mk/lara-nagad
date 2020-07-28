@@ -1,3 +1,4 @@
+<p align="center" ><img src="https://raw.githubusercontent.com/code4mk/lara-nagad/master/nagad%20payment.png"></p>
 # lara-nagad `Bangladesh Nagad`
 Laravel Nagad payment `BD`
 
