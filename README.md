@@ -79,6 +79,18 @@ dd($verify);
 
 ```
 
+# Note:
+
+`~Sandbox`
+
+* Need a merchant account.
+* Register a Nagad number and need sandbox balance (contact with nagad)
+
+`~ Live`
+
+* Need a merchant account (live server)
+* Contact with Nagad and provide your live server ip address.
+
 # Any query
 
 * hiremostafa@gmail.com
