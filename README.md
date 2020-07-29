@@ -91,6 +91,10 @@ dd($verify);
 * Need a merchant account (live server)
 * Contact with Nagad and provide your live server ip address.
 
+# Demo
+
+* [Lara Nagad Demo](https://github.com/code4mk/lara-nagad-demo)
+
 # Any query
 
 * hiremostafa@gmail.com
