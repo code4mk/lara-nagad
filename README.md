@@ -80,13 +80,15 @@ dd($verify);
 ```
 # get support id (live project)
 
-```php
-use NagadPayment;
+~ create a route and paste the code for temporary use.which return support ticket id.
 
-$sid = NagadPayment::tnxID($id)
-             ->amount($amount)
-             ->getSupportID();
-return $sid;
+```php
+Route::get('sid',function(){
+    $sid = NagadPayment::tnxID(1)
+                 ->amount(100)
+                 ->getSupportID();
+    return $sid;
+})
 ```
 
 
