@@ -151,4 +151,40 @@ class Nagad{
         $arr = json_decode($json, true);
         return $arr;
     }
+
+
+    /**
+     * Get support id for live project <callback url>
+     * @author code4mk <hiremostafa@gmail.com>
+     * @since v1.0.0
+     * @version 1.0.0
+     */
+    public function getSupportID()
+    {
+        $DateTime = Date('YmdHis');
+        $MerchantID = config('nagad.merchant_id');
+        $invoiceNo = $this->tnxStatus ? $this->tnxID : 'Inv'.Date('YmdH').rand(1000, 10000);
+        $merchantCallbackURL = config('nagad.callback_url');
+
+        $SensitiveData = [
+            'merchantId' => $MerchantID,
+            'datetime' => $DateTime,
+            'orderId' => $invoiceNo,
+            'challenge' => Utility::generateRandomString()
+        ];
+
+        $PostData = array(
+            'accountNumber' => config('nagad.merchant_number'),
+            'dateTime' => $DateTime,
+            'sensitiveData' => Utility::EncryptDataWithPublicKey(json_encode($SensitiveData)),
+            'signature' => Utility::SignatureGenerate(json_encode($SensitiveData))
+        );
+
+        $initializeUrl = $this->nagadHost."/check-out/initialize/" . $MerchantID . "/" . $invoiceNo;
+
+        $Result_Data = Utility::HttpPostMethodSupportID($initializeUrl,$PostData);
+
+        return $Result_Data;
+
+    }
 }

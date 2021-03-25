@@ -78,6 +78,18 @@ if ($verify->status === 'Aborted') {
 dd($verify);
 
 ```
+# get support id (live project)
+
+```php
+use NagadPayment;
+
+$sid = NagadPayment::tnxID($id)
+             ->amount($amount)
+             ->getSupportID();
+return $sid;
+```
+
+
 
 # Note:
 
@@ -90,6 +102,7 @@ dd($verify);
 
 * Need a merchant account (live server)
 * Contact with Nagad and provide your live server ip address.
+* provide support id ($sid) the nagad office
 
 # Demo
 

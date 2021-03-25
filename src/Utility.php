@@ -82,6 +82,32 @@ class Utility {
         return $plain_text;
     }
 
+    public static function HttpPostMethodSupportID($PostURL, $PostData)
+    {
+        $url = curl_init($PostURL);
+        $posttoken = json_encode($PostData);
+        $header = array(
+            'Content-Type:application/json',
+            'X-KM-Api-Version:v-0.2.0',
+            'X-KM-IP-V4:' . self::get_client_ip(),
+            'X-KM-Client-Type:PC_WEB'
+        );
+
+        curl_setopt($url, CURLOPT_HTTPHEADER, $header);
+        curl_setopt($url, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($url, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($url, CURLOPT_POSTFIELDS, $posttoken);
+        curl_setopt($url, CURLOPT_FOLLOWLOCATION, 1);
+        curl_setopt($url, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($url, CURLOPT_SSL_VERIFYPEER, 0);
+        curl_setopt($url, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+
+
+        $resultdata = curl_exec($url);
+        curl_close($url);
+        return $resultdata;
+    }
+
     public static function HttpPostMethod($PostURL, $PostData)
     {
         $url = curl_init($PostURL);
