@@ -84,20 +84,6 @@ if ($verify->status === 'Aborted') {
 dd($verify);
 
 ```
-# get support id (live project)
-
-~ create a route and paste the code for temporary use.which return support ticket id.
-
-```php
-Route::get('sid',function(){
-    $sid = NagadPayment::tnxID(1)
-                 ->amount(100)
-                 ->getSupportID();
-    return $sid;
-})
-```
-
-
 
 # Note:
 
@@ -111,6 +97,25 @@ Route::get('sid',function(){
 * Need a merchant account (live server)
 * Contact with Nagad and provide your live server ip address.
 * provide support id ($sid) the nagad office
+
+# Live mode tips 
+
+`Sandbox works fine but when you deploy your project on server you can't get any response and don't work payment system`
+
+## How to enable nagad gateway on server 
+
+* contact with nagad provide your ip and support token which you get from temporary route get-support-id . nagad will be white listed your ip and approve your merchant. now your nagad gateway work properly on server.
+
+~ temporary route 
+
+```php
+Route::get('get-support-id',function(){
+    $sid = NagadPayment::tnxID(1)
+                 ->amount(100)
+                 ->getSupportID();
+    return $sid;
+})
+```
 
 # Demo
 
