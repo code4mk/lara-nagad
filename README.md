@@ -104,9 +104,9 @@ dd($verify);
 
 ## How to enable nagad gateway on server 
 
-* contact with nagad provide your ip and support token which you get from temporary route get-support-id . nagad will be white listed your ip and approve your merchant. now your nagad gateway work properly on server.
+* Contact with nagad, provide your ip and support ID  which you will get from temporary route `get-support-id` . Nagad will be white-listed your ip and approve your merchant. Now your nagad gateway work properly on server.
 
-~ temporary route 
+~ temporary route (copy and paste)
 
 ```php
 Route::get('get-support-id',function(){
